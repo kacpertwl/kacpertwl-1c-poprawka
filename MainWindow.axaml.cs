@@ -1,5 +1,6 @@
 using System;
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 using Avalonia.Threading;
 
 namespace kacpertwl_1c_poprawka;
@@ -8,6 +9,7 @@ public partial class MainWindow : Window
 {
     private readonly DispatcherTimer _timer;
     private int _remainingSeconds;
+    private bool _isRunning = false;
     private bool _isWorkMode = true;
     private int _completedCycles = 0;
 
@@ -21,8 +23,27 @@ public partial class MainWindow : Window
         };
         _timer.Tick += Timer_Tick;
 
-        _remainingSeconds = 25 * 60;
+        StartPauseButton.Click += StartPauseButton_Click;
+        ResetButton.Click += ResetButton_Click;
+        WorkDurationInput.ValueChanged += WorkDurationInput_ValueChanged;
+        BreakDurationInput.ValueChanged += BreakDurationInput_ValueChanged;
+
+        _remainingSeconds = GetWorkDurationSeconds();
         UpdateDisplay();
+    }
+
+    private int GetWorkDurationSeconds()
+    {
+        int minutes = (int)Math.Round(WorkDurationInput?.Value ?? 25m);
+        if (minutes < 1) minutes = 1;
+        return minutes * 60;
+    }
+
+    private int GetBreakDurationSeconds()
+    {
+        int minutes = (int)Math.Round(BreakDurationInput?.Value ?? 5m);
+        if (minutes < 1) minutes = 1;
+        return minutes * 60;
     }
 
     private void Timer_Tick(object? sender, EventArgs e)
@@ -35,20 +56,67 @@ public partial class MainWindow : Window
         {
             if (_isWorkMode)
             {
-                // Przejście z pracy na przerwę
+                // Po skończonej pracy przerwa rusza sama
                 _isWorkMode = false;
-                _remainingSeconds = 5 * 60;
+                _remainingSeconds = GetBreakDurationSeconds();
             }
             else
             {
-                // Zakończenie przerwy - zaliczenie pełnego cyklu
-                _isWorkMode = true;
+                // Zakończono przerwę - pełen cykl ukończony
                 _completedCycles++;
-                _remainingSeconds = 25 * 60;
+                _isWorkMode = true;
+                _remainingSeconds = GetWorkDurationSeconds();
             }
         }
 
         UpdateDisplay();
+    }
+
+    private void StartPauseButton_Click(object? sender, RoutedEventArgs e)
+    {
+        if (_isRunning)
+        {
+            _timer.Stop();
+            _isRunning = false;
+            StartPauseButton.Content = "Start";
+        }
+        else
+        {
+            _timer.Start();
+            _isRunning = true;
+            StartPauseButton.Content = "Pauza";
+        }
+
+        UpdateDisplay();
+    }
+
+    private void ResetButton_Click(object? sender, RoutedEventArgs e)
+    {
+        _timer.Stop();
+        _isRunning = false;
+        _isWorkMode = true;
+        _remainingSeconds = GetWorkDurationSeconds();
+
+        StartPauseButton.Content = "Start";
+        UpdateDisplay();
+    }
+
+    private void WorkDurationInput_ValueChanged(object? sender, NumericUpDownValueChangedEventArgs e)
+    {
+        if (!_isRunning && _isWorkMode)
+        {
+            _remainingSeconds = GetWorkDurationSeconds();
+            UpdateDisplay();
+        }
+    }
+
+    private void BreakDurationInput_ValueChanged(object? sender, NumericUpDownValueChangedEventArgs e)
+    {
+        if (!_isRunning && !_isWorkMode)
+        {
+            _remainingSeconds = GetBreakDurationSeconds();
+            UpdateDisplay();
+        }
     }
 
     private void UpdateDisplay()
@@ -58,6 +126,6 @@ public partial class MainWindow : Window
 
         TimerText.Text = $"{minutes:D2}:{seconds:D2}";
         CycleCountText.Text = $"Cykle: {_completedCycles}";
-        StatusText.Text = _isWorkMode ? "Tryb: Praca (25 min)" : "Tryb: Przerwa (5 min)";
+        StatusText.Text = _isWorkMode ? "Tryb: Praca" : "Tryb: Przerwa";
     }
 }
