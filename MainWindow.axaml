@@ -2,8 +2,57 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        mc:Ignorable="d" d:DesignWidth="520" d:DesignHeight="560"
+        Width="520" Height="560"
+        WindowStartupLocation="CenterScreen"
         x:Class="kacpertwl_1c_poprawka.MainWindow"
-        Title="kacpertwl_1c_poprawka">
-    Welcome to Avalonia!
+        Title="Minutnik Pomodoro"
+        Background="#181824">
+    <Grid Margin="24" RowDefinitions="Auto,Auto,*">
+        <!-- Nagłówek -->
+        <TextBlock Grid.Row="0"
+                   Text="Minutnik Pomodoro"
+                   FontSize="24"
+                   FontWeight="Bold"
+                   Foreground="#FFFFFF"
+                   HorizontalAlignment="Center"
+                   Margin="0,0,0,16" />
+
+        <!-- Sekcja czasu i cykli -->
+        <Border Grid.Row="1"
+                Background="#232334"
+                CornerRadius="16"
+                Padding="24"
+                Margin="0,0,0,16">
+            <StackPanel HorizontalAlignment="Center" Spacing="12">
+                <TextBlock x:Name="StatusText"
+                           Text="Tryb: Praca (25 min)"
+                           FontSize="16"
+                           FontWeight="Medium"
+                           Foreground="#A5B4FC"
+                           HorizontalAlignment="Center" />
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="20">
+                    <TextBlock x:Name="TimerText"
+                               Text="25:00"
+                               FontSize="56"
+                               FontWeight="Bold"
+                               Foreground="#38BDF8"
+                               VerticalAlignment="Center" />
+
+                    <Border Background="#2E2E44"
+                            CornerRadius="8"
+                            Padding="12,8"
+                            VerticalAlignment="Center">
+                        <TextBlock x:Name="CycleCountText"
+                                   Text="Cykle: 0"
+                                   FontSize="20"
+                                   FontWeight="SemiBold"
+                                   Foreground="#F1F5F9"
+                                   VerticalAlignment="Center" />
+                    </Border>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+    </Grid>
 </Window>
