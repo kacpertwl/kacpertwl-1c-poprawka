@@ -2,8 +2,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="540" d:DesignHeight="600"
-        Width="540" Height="600"
+        mc:Ignorable="d" d:DesignWidth="540" d:DesignHeight="700"
+        Width="540" Height="700"
         WindowStartupLocation="CenterScreen"
         x:Class="kacpertwl_1c_poprawka.MainWindow"
         Title="Minutnik Pomodoro"
@@ -121,5 +121,27 @@
                     Foreground="#FFFFFF"
                     CornerRadius="10" />
         </StackPanel>
+
+        <!-- Blok „Własną ręką: lista” - Historia skończonych cykli -->
+        <Border Grid.Row="4"
+                Background="#232334"
+                CornerRadius="16"
+                Padding="18,16">
+            <Grid RowDefinitions="Auto,*">
+                <TextBlock Grid.Row="0"
+                           Text="Historia ukończonych cykli:"
+                           FontSize="14"
+                           FontWeight="SemiBold"
+                           Foreground="#CBD5E1"
+                           Margin="0,0,0,10" />
+
+                <ListBox Grid.Row="1"
+                         x:Name="CycleHistoryListBox"
+                         Background="#181824"
+                         CornerRadius="8"
+                         MinHeight="120"
+                         Foreground="#F1F5F9" />
+            </Grid>
+        </Border>
     </Grid>
 </Window>

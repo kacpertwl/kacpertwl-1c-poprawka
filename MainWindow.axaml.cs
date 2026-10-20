@@ -1,4 +1,5 @@
 using System;
+using System.Collections.ObjectModel;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
@@ -8,6 +9,7 @@ namespace kacpertwl_1c_poprawka;
 public partial class MainWindow : Window
 {
     private readonly DispatcherTimer _timer;
+    private readonly ObservableCollection<string> _cycleHistory = new();
     private int _remainingSeconds;
     private bool _isRunning = false;
     private bool _isWorkMode = true;
@@ -27,6 +29,8 @@ public partial class MainWindow : Window
         ResetButton.Click += ResetButton_Click;
         WorkDurationInput.ValueChanged += WorkDurationInput_ValueChanged;
         BreakDurationInput.ValueChanged += BreakDurationInput_ValueChanged;
+
+        CycleHistoryListBox.ItemsSource = _cycleHistory;
 
         _remainingSeconds = GetWorkDurationSeconds();
         UpdateDisplay();
@@ -64,6 +68,11 @@ public partial class MainWindow : Window
             {
                 // Zakończono przerwę - pełen cykl ukończony
                 _completedCycles++;
+                int workMinutes = (int)Math.Round(WorkDurationInput?.Value ?? 25m);
+                int breakMinutes = (int)Math.Round(BreakDurationInput?.Value ?? 5m);
+                string entry = $"Cykl {_completedCycles}: Praca {workMinutes} min + Przerwa {breakMinutes} min (ukończono: {DateTime.Now:HH:mm:ss})";
+                _cycleHistory.Add(entry);
+
                 _isWorkMode = true;
                 _remainingSeconds = GetWorkDurationSeconds();
             }
